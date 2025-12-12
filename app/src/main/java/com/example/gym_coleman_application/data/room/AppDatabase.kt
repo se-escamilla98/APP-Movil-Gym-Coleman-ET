@@ -6,12 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [User::class],
-    version = 2, // 1️⃣ CAMBIO: Subimos la versión a 2
+    // 1. AQUI AGREGAMOS LAS NUEVAS TABLAS
+    entities = [User::class, ProductCart::class, CartItem::class],
+    version = 3, // 2. SUBIMOS VERSION
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
+
     abstract fun userDao(): UserDao
+    abstract fun cartDao(): CartDao // 3. AGREGAMOS EL DAO
 
     companion object {
         @Volatile
@@ -22,12 +25,10 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "gym_database"
+                    "gym_database" // Asegúrate de que este nombre sea igual al que ya tenías
                 )
-                    // 2️⃣ CAMBIO: Agregamos esto para permitir que la BD se recree si cambia
                     .fallbackToDestructiveMigration()
                     .build()
-
                 INSTANCE = instance
                 instance
             }
