@@ -23,10 +23,10 @@ class CartViewModel(private val repository: CartRepository) : ViewModel() {
     fun addSampleProducts() {
         viewModelScope.launch {
             if (products.value.isEmpty()) {
-                repository.insertProduct(ProductCart(name = "Proteína Whey", price = 50.0))
-                repository.insertProduct(ProductCart(name = "Creatina Monohidrato", price = 25.0))
-                repository.insertProduct(ProductCart(name = "Pre-Entreno", price = 30.0))
-                repository.insertProduct(ProductCart(name = "BCAA", price = 20.0))
+                repository.insertProduct(ProductCart(name = "Proteína Whey", price = 50000.0))
+                repository.insertProduct(ProductCart(name = "Creatina Monohidrato", price = 25000.0))
+                repository.insertProduct(ProductCart(name = "Pre-Entreno", price = 30000.0))
+                repository.insertProduct(ProductCart(name = "BCAA", price = 20000.0))
             }
         }
     }
