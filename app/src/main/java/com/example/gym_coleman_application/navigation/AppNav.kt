@@ -3,48 +3,41 @@ package com.example.gym_coleman_application.navigation
 import ExerciseScreen
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.gym_coleman_application.data.room.AppDatabase
-import com.example.gym_coleman_application.viewmodel.LoginViewModel
-import com.example.gym_coleman_application.viewmodel.RegisterViewModel
+import com.example.gym_coleman_application.R
 import com.example.gym_coleman_application.ui.theme.login.LoginScreen
 import com.example.gym_coleman_application.ui.theme.login.RegisterScreen
+import com.example.gym_coleman_application.ui.theme.shop.CartScreen
+import com.example.gym_coleman_application.ui.theme.shop.CatalogScreen
 import com.example.gym_coleman_application.view.DrawerMenu
 import com.example.gym_coleman_application.view.MapScreen
 import com.example.gym_coleman_application.view.ProductoFormScreen
-import com.example.gym_coleman_application.R
-import com.example.gym_coleman_application.repository.UserRepository
+import com.example.gym_coleman_application.viewmodel.CartViewModel
+import com.example.gym_coleman_application.viewmodel.LoginViewModel
+import com.example.gym_coleman_application.viewmodel.RegisterViewModel
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable
 fun AppNav(
     loginViewModel: LoginViewModel,
-    registerViewModel: RegisterViewModel
+    registerViewModel: RegisterViewModel,
+    cartViewModel: CartViewModel // ✅ 1. Agregamos el ViewModel del carrito
 ) {
     val navController = rememberNavController()
-    val context = LocalContext.current
 
-    // ⭐ Instancia BD Room
-    val db = AppDatabase.getDatabase(context)
-    val userRepository = UserRepository(db.userDao())
+    // NOTA: Ya no instanciamos la BD aquí porque los ViewModels vienen listos desde MainActivity
 
     NavHost(
         navController = navController,
         startDestination = "login"
     ) {
 
-        // ------------------------------------
-        // LOGIN
-        // ------------------------------------
+        // --- LOGIN ---
         composable("login") {
-
-            val loginViewModel = LoginViewModel(userRepository)
-
             LoginScreen(
                 navController = navController,
                 onLoginSuccess = { username ->
@@ -52,42 +45,45 @@ fun AppNav(
                         popUpTo("login") { inclusive = true }
                     }
                 },
-                onRegisterClick = {
-                    navController.navigate("register")
-                },
+                onRegisterClick = { navController.navigate("register") },
                 loginViewModel = loginViewModel
             )
         }
 
-        // ------------------------------------
-        // REGISTER (ARREGLADO)
-        // ------------------------------------
-// 🔹 REGISTRO
+        // --- REGISTRO ---
         composable("register") {
-            val registerViewModel = RegisterViewModel(userRepository)
-
             RegisterScreen(
                 navController = navController,
                 registerViewModel = registerViewModel
             )
         }
 
-
-
-        // ------------------------------------
-        // DRAWER MENU
-        // ------------------------------------
+        // --- MENÚ PRINCIPAL ---
         composable(
             "DrawerMenu/{username}",
             arguments = listOf(navArgument("username") { type = NavType.StringType })
         ) { entry ->
             val username = entry.arguments?.getString("username").orEmpty()
-            DrawerMenu(username = username, navController = navController)
+
+
+            DrawerMenu(
+                username = username,
+                navController = navController,
+                cartViewModel = cartViewModel
+            )
         }
 
-        // ------------------------------------
-        // PRODUCT FORM
-        // ------------------------------------
+        // --- TIENDA (NUEVO) ---
+        composable("catalog") {
+            CatalogScreen(navController = navController, cartViewModel = cartViewModel)
+        }
+
+        // --- CARRITO (NUEVO) ---
+        composable("cart") {
+            CartScreen(navController = navController, cartViewModel = cartViewModel)
+        }
+
+        // --- OTROS ---
         composable(
             "ProductoFormScreen/{nombre}/{precio}/{imagen}",
             arguments = listOf(
@@ -96,10 +92,9 @@ fun AppNav(
                 navArgument("imagen") { type = NavType.IntType }
             )
         ) { entry ->
-
             val nombre = entry.arguments?.getString("nombre") ?: ""
             val precio = entry.arguments?.getString("precio") ?: ""
-            val imagen = entry.arguments?.getInt("imagen") ?: R.drawable.creatina
+            val imagen = entry.arguments?.getInt("imagen") ?: R.drawable.creatina // Asegúrate que este recurso exista
 
             ProductoFormScreen(
                 navController = navController,
@@ -109,14 +104,7 @@ fun AppNav(
             )
         }
 
-        // MAPA
-        composable("mapa") {
-            MapScreen()
-        }
-
-        // EJERCICIOS API
-        composable("trainings") {
-            ExerciseScreen()
-        }
+        composable("mapa") { MapScreen() }
+        composable("trainings") { ExerciseScreen() }
     }
 }

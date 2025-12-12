@@ -7,8 +7,10 @@ import androidx.room.Room
 import com.example.gym_coleman_application.data.room.AppDatabase
 
 import com.example.gym_coleman_application.navigation.AppNav
+import com.example.gym_coleman_application.repository.CartRepository
 import com.example.gym_coleman_application.repository.UserRepository
 import com.example.gym_coleman_application.ui.theme.theme.Gym_coleman_applicationTheme
+import com.example.gym_coleman_application.viewmodel.CartViewModel
 import com.example.gym_coleman_application.viewmodel.LoginViewModel
 import com.example.gym_coleman_application.viewmodel.RegisterViewModel
 
@@ -25,20 +27,20 @@ class MainActivity : ComponentActivity() {
 
         // ⭐ Repositorio de usuarios
         val userRepository = UserRepository(db.userDao())
+        val cartRepository = CartRepository(db.cartDao())
 
         // ⭐ ViewModels conectados al repositorio
         val loginViewModel = LoginViewModel(userRepository)
         val registerViewModel = RegisterViewModel(userRepository)
+        val cartViewModel = CartViewModel(cartRepository)
 
         setContent {
-
-            // ⭐ Aplicar tu tema visual
             Gym_coleman_applicationTheme {
-
-                // ⭐ Pasar ViewModels a la navegación
+                // 4. Navegación
                 AppNav(
                     loginViewModel = loginViewModel,
-                    registerViewModel = registerViewModel
+                    registerViewModel = registerViewModel,
+                    cartViewModel = cartViewModel // ✅ Ahora sí existe la variable
                 )
             }
         }
