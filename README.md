@@ -56,6 +56,6 @@ Siga estos pasos estrictamente para levantar el entorno de desarrollo y pruebas.
 
 ### 1. Clonar el Repositorio
 ```bash
-git clone [URL_DEL_REPOSITORIO_GITHUB]
-cd [NOMBRE_CARPETA]
+git clone (https://github.com/se-escamilla98/APP-Movil-Gym-Coleman-ET.git)
+cd [Nombre de la Carpeta en la cual va a guardar el proyecto]
 Se abrira directamente en el IDE o clonar el repositorio con la URL
