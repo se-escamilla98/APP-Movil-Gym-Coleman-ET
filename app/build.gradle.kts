@@ -48,7 +48,6 @@ android {
 dependencies {
 
 
-
     implementation("androidx.compose.foundation:foundation:1.6.7")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -113,6 +112,8 @@ dependencies {
 dependencies {
 // TEST DEPENDENCIES (CONFIGURACIÓN CORRECTA Y LIMPIA)
 // Kotest (solo estas 2 son necesarias)
+    // Para UI Test (Visual)
+
     testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
 // MockK
